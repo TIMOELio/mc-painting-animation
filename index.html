@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MC-GIf</title>
+        <meta charset="utf-8">
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+        </style>
+    </head>
+    <body onload="localStorage.imgcounter=0">
+        <!--<script src="js/ajax.js"></script>-->
+        <script src="js/jquery.js"></script>
+        
+        <h1>Minecraft Painting Animation</h1>
+        <br>
+        <br>
+
+        <div id="inputs">
+            <input type="file" id="input1" onclick="showimg(); localStorage.imgcounter=1">
+            <img id="img1" src="#" width="64px" height="64px">
+            <br>
+            <input type="file" id="input2" onclick="showimg(); localStorage.imgcounter=2">
+            <img id="img2" src="#" width="64px" height="64px">
+            <br>
+        </div>
+        <br>
+        <button onclick="newinput()">Another Image</button>
+        <br>
+
+        <button onclick="klicken()">Mergen</button>
+        <canvas id="canvas"></canvas>
+        
+        <script>
+
+            function showimg() {
+                function readURL(input) {
+                    if (input.files && input.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            $('#img' + localStorage.imgcounter).attr('src', e.target.result);
+                        }
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                }
+                $("#input" + localStorage.imgcounter).change(function() {
+                    readURL(this);
+                });
+                localStorage.imgcounter=0;
+            }
+            
+            function newinput() {
+                var para = document.createElement("input");
+                para.setAttribute("type", "file");
+                para.setAttribute("id", "input3");
+                para.setAttribute("onclick", "showimg(); localStorage.imgcounter=3")
+                var element = document.getElementById("inputs");
+                element.appendChild(para);
+
+                var para = document.createElement("img");
+                para.setAttribute("id", "img3");
+                para.setAttribute("src", "#");
+                para.setAttribute("width", "64px");
+                para.setAttribute("height", "64px");
+                var element = document.getElementById("inputs");
+                element.appendChild(para);
+
+                var para = document.createElement("br");
+                var element = document.getElementById("inputs");
+                element.appendChild(para);
+            }
+            
+            // Ausgabe von beiden Bildern als jpg
+            function klicken() {
+                var img1 = document.getElementById('img1')
+                var img2 = document.getElementById('img2');
+                var canvas = document.getElementById('canvas');
+                var context = canvas.getContext('2d');
+                img1.width = 64;
+                img1.height = 64;
+                img2.width = 64;
+                img2.height = 64;
+                canvas.width = 64;
+                canvas.height = 128;
+                
+                context.drawImage(img1, 0, 0, 64, 64); 
+                context.drawImage(img2, 0, 64, 64, 64);
+            }
+
+        </script>
+    </body>
+</html>
