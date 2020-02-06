@@ -9,58 +9,72 @@
             }
         </style>
     </head>
-    <body onload="localStorage.imgcounter=0">
-        <!--<script src="js/ajax.js"></script>-->
+    <body onload="localStorage.imgcounter=2">
         <script src="js/jquery.js"></script>
+        <!-- for downloading files -->
+        <script src="js/download.js"></script>
         
         <h1>Minecraft Painting Animation</h1>
         <br>
         <br>
 
         <div id="inputs">
-            <input type="file" id="input1" onclick="showimg(); localStorage.imgcounter=1">
-            <img id="img1" src="#" width="64px" height="64px">
+            <input type="file" id="input1" onclick="showimg(); localStorage.selectimg=1">
+            <img id="img1" src="eins.png" width="64px" height="64px">
             <br>
-            <input type="file" id="input2" onclick="showimg(); localStorage.imgcounter=2">
-            <img id="img2" src="#" width="64px" height="64px">
+            <input type="file" id="input2" onclick="showimg(); localStorage.selectimg=2">
+            <img id="img2" src="zwei.png" width="64px" height="64px">
             <br>
         </div>
         <br>
         <button onclick="newinput()">Another Image</button>
         <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <button onclick="klicken()">Put Together</button>
+        <button onclick="downloadbut()">Download</button>
+        <canvas id="merged"></canvas>
+        <iframe id="my_iframe" style="display:none;"></iframe>
 
-        <button onclick="klicken()">Mergen</button>
-        <canvas id="canvas"></canvas>
-        
         <script>
 
+            // Das ausgewählte Bild wird angezigt
             function showimg() {
                 function readURL(input) {
                     if (input.files && input.files[0]) {
                         var reader = new FileReader();
                         reader.onload = function(e) {
-                            $('#img' + localStorage.imgcounter).attr('src', e.target.result);
+                            $('#img' + localStorage.selectimg).attr('src', e.target.result);
                         }
                         reader.readAsDataURL(input.files[0]);
                     }
                 }
-                $("#input" + localStorage.imgcounter).change(function() {
+                $("#input" + localStorage.selectimg).change(function() {
                     readURL(this);
                 });
-                localStorage.imgcounter=0;
             }
             
+            // Neuer Button um ein Bild hinzuzufügen
             function newinput() {
+                if(localStorage.imgcounter>=3) {
+                    localStorage.imgcounter++;
+                    document.write(localStorage.imgcounter);
+                } else {
+                    localStorage.imgcounter=3;
+                }
+                
                 var para = document.createElement("input");
                 para.setAttribute("type", "file");
-                para.setAttribute("id", "input3");
-                para.setAttribute("onclick", "showimg(); localStorage.imgcounter=3")
+                para.setAttribute("id", "input" + localStorage.imgcounter);
+                para.setAttribute("onclick", "showimg()")
                 var element = document.getElementById("inputs");
                 element.appendChild(para);
 
                 var para = document.createElement("img");
-                para.setAttribute("id", "img3");
-                para.setAttribute("src", "#");
+                para.setAttribute("id", "img" + localStorage.imgcounter);
+                para.setAttribute("src", "drei.png");
                 para.setAttribute("width", "64px");
                 para.setAttribute("height", "64px");
                 var element = document.getElementById("inputs");
@@ -71,23 +85,24 @@
                 element.appendChild(para);
             }
             
-            // Ausgabe von beiden Bildern als jpg
+            // Ausgabe von allen Bildern in canvas als jpg
             function klicken() {
-                var img1 = document.getElementById('img1')
-                var img2 = document.getElementById('img2');
-                var canvas = document.getElementById('canvas');
-                var context = canvas.getContext('2d');
-                img1.width = 64;
-                img1.height = 64;
-                img2.width = 64;
-                img2.height = 64;
+                var canvas = document.getElementById('merged');
                 canvas.width = 64;
-                canvas.height = 128;
-                
-                context.drawImage(img1, 0, 0, 64, 64); 
-                context.drawImage(img2, 0, 64, 64, 64);
+                canvas.height = (64*localStorage.imgcounter);
+                for(var i=1; i<=localStorage.imgcounter; i++) {
+                    var img1 = document.getElementById('img' + i);
+                    var context = canvas.getContext('2d');
+                    img1.width = 64;
+                    img1.height = 64;
+                    context.drawImage(img1, 0, ((i-1)*64), 64, 64);
+                }
             }
 
+            //download
+            function downloadbut() {
+                download((document.getElementById("merged")), "dlText.png", "image/png");
+            }
         </script>
     </body>
 </html>
